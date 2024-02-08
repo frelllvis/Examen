@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examen de Normas de Tránsito</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    
+    #inicio-examen {
+      background-image: url('https://via.placeholder.com/150');
+      background-size: cover;
+      background-position: center;
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    #questions-container {
+      display: none;
+    }
+
+    #next-button {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="inicio-examen">
+  <h2>Bienvenido al Examen de Normas de Tránsito</h2>
+  <p>Este examen te ayudará a evaluar tus conocimientos sobre las normas de tránsito. Antes de comenzar, asegúrate de leer cada pregunta cuidadosamente y seleccionar la opción que consideres correcta.</p>
+  <button onclick="comenzarExamen()">Comenzar Examen</button>
+</div>
+
+<div id="questions-container"></div>
+<div id="resultado"></div>
+
+<script>
+const preguntas = [
+  {
+    pregunta: "1) El color ámbar o amarillo del semáforo significa que:",
+    opciones: {
+      a: "Los vehículos deben avanzar.",
+      b: "Los vehículos deben detenerse.",
+      c: "Los vehículos deben acelerar la marcha.",
+      d: "Los vehículos deben detenerse antes de ingresar a la intersección si su velocidad y ubicación lo permiten; de lo contrario, deberán cruzar y despejar la intersección."
+    },
+    respuestaCorrecta: "d"
+  },
+  {
+    pregunta: "2) ¿Qué indica una flecha verde en un semáforo vehicular?",
+    opciones: {
+      a: "Se puede continuar con precaución únicamente en la dirección de la flecha y desde el carril que esta flecha controla.",
+      b: "No está permitida la circulación en el sentido que indica la flecha.",
+      c: "Se debe respetar únicamente la luz circular.",
+      d: "Ninguna de las alternativas es correcta."
+    },
+    respuestaCorrecta: "a"
+  },
+  {
+    pregunta: "3) ¿Cuál de las siguientes afirmaciones es correcta?",
+    opciones: {
+      a: "El conductor debe respetar ls limites maximos y minimos de velocidad establecidos.",
+      b: "El conductor debe respetar unicamente los limites maximos de velocidad, pues no existen limites minimos.",
+      c: "El conductor puede conducir a la velocidad que desee, siempre que lo haga de manera correcta.",
+      d: "Ninguna de las alternativas es correcta."
+    },
+    respuestaCorrecta: "a"
+  },
+  {
+    pregunta: "4) ¿En caso de accidentes, el SOAT cubre los daños que sufren?",
+    opciones: {
+      a: "Solo los ocupantes del vehiculo.",
+      b: "Los ocupantes y terceros no ocupantes del vehiculo.",
+      c: "Solo terceros afectados.",
+      d: "Solo el conductor del vehiculo."
+    },
+    respuestaCorrecta: "b"
+  },
+  {
+    pregunta: "5) ¿Qué significa un triángulo rojo de seguridad colocado en la calzada?",
+    opciones: {
+      a: "La presencia de un vehiculo inmovilizando en la via publica por alguna circunstancia.",
+      b: "Zona de obras por alguna circusntancia.",
+      c: "Que el vehiculo que lo enfrenta debe detenerse.",
+      d: "a y c son correctas."
+    },
+    respuestaCorrecta: "a"
+  },
+  {
+    pregunta: "6) Se entiende por carril a la:",
+    opciones: {
+      a: "Parte de la via destinada a la circulacion de peatones.",
+      b: "Parte de la calzada destinada al transito de una fila de vehiculos.",
+      c: "Via rural destinada a la circulacion de peatones y animales.",
+      d: "Todas las alternativas son correctas ."
+    },
+    respuestaCorrecta: "b"
+  },
+  {
+    pregunta: "7) ¿Qué debe hacer si se aproxima a una intersección sin semáforo y sin presencia de la Policía de Tránsito, y observa que un peatón está cruzando por el paso peatonal?",
+    opciones: {
+      a: "Disminuir la velocidad y pasar con cuidado.",
+      b: "Detener el vehiculo y ceder el paso al peaton.",
+      c: "Continuar porque usted tiene la prioridad.",
+      d: "Incrementar la velocidad para adelantar el cruce del peaton."
+    },
+    respuestaCorrecta: "b"
+  },
+  {
+    pregunta: "8) La acción correcta al abastecer de combustible su vehículo, es:",
+    opciones: {
+      a: "Asegurarse de que todos los pasajeros permanezcan a bordo del vehiculo.",
+      b: "Abstenerse de fumar tanto el conductor como sus acompañantes.",
+      c: "Mantener encendido el motor del vehiculo.",
+      d: "Todas las alternativas son correctas."
+    },
+    respuestaCorrecta: "b"
+  },
+  {
+    pregunta: "9) ¿Después de qué tiempo de haber cometido la misma infracción se llama reincidencia y es sancionada con el doble de la multa establecida?",
+    opciones: {
+      a: "06 meses.",
+      b: "12 meses.",
+      c: "24 meses .",
+      d: "35 meses."
+    },
+    respuestaCorrecta: "b"
+  },
+  {
+    pregunta: "10) El conductor que en una vía urbana va a girar a la izquierda, a la derecha o en U debe hacer la señal respectiva con la luz direccional, por lo menos:",
+    opciones: {
+      a: "2 segundos antes de realizar la maniobra.",
+      b: "1 metro antes de realizar la maniobra .",
+      c: "20 metros antes de realizar la maniobra.",
+      d: "3 metros antes de realizar la maniobra."
+    },
+    respuestaCorrecta: "c"
+  },
+];
+
+const container = document.getElementById('questions-container');
+const resultadoContainer = document.getElementById('resultado');
+let currentQuestionIndex = -1;
+let correctas = 0;
+let incorrectas = 0;
+
+function comenzarExamen() {
+  document.getElementById('inicio-examen').style.display = 'none';
+  currentQuestionIndex++;
+  showQuestion(currentQuestionIndex);
+}
+
+function showQuestion(index) {
+  container.innerHTML = '';
+  const pregunta = preguntas[index];
+  const divPregunta = document.createElement('div');
+  divPregunta.innerHTML = `<p>${pregunta.pregunta}</p>`;
+
+  for (const opcion in pregunta.opciones) {
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = `pregunta${index}`;
+    input.value = opcion;
+    divPregunta.appendChild(input);
+
+    const label = document.createElement('label');
+    label.innerHTML = `${opcion}: ${pregunta.opciones[opcion]}<br>`;
+    divPregunta.appendChild(label);
+  }
+
+  container.appendChild(divPregunta);
+  container.style.display = 'block';
+
+  document.getElementById('next-button').style.display = 'block';
+}
+
+function nextQuestion() {
+  const respuestasUsuario = obtenerRespuestasUsuario();
+  const resultadoPregunta = verificarRespuestas(respuestasUsuario);
+
+  if (resultadoPregunta === "correcta") {
+    correctas++;
+  } else {
+    incorrectas++;
+  }
+
+  currentQuestionIndex++;
+
+  if (currentQuestionIndex < preguntas.length) {
+    showQuestion(currentQuestionIndex);
+  } else {
+    mostrarResultados();
+  }
+}
+
+function obtenerRespuestasUsuario() {
+  const respuestas = [];
+  preguntas.forEach((pregunta, index) => {
+    const seleccionado = document.querySelector(`input[name="pregunta${index}"]:checked`);
+    respuestas.push(seleccionado ? seleccionado.value : null);
+  });
+  return respuestas;
+}
+
+function verificarRespuestas(respuestasUsuario) {
+  const preguntaActual = preguntas[currentQuestionIndex];
+  const respuestaUsuario = respuestasUsuario[currentQuestionIndex];
+
+  if (respuestaUsuario === preguntaActual.respuestaCorrecta) {
+    return "correcta";
+  } else {
+    return "incorrecta";
+  }
+}
+
+function mostrarResultados() {
+  const respuestasUsuario = obtenerRespuestasUsuario();
+  respuestasUsuario.forEach((respuesta, index) => {
+    if (respuesta === preguntas[index].respuestaCorrecta) {
+      correctas++;
+    } else {
+      incorrectas++;
+    }
+  });
+  resultadoContainer.innerHTML = `<p>Respuestas correctas: ${correctas}</p>`;
+  resultadoContainer.innerHTML += `<p>Respuestas incorrectas: ${incorrectas}</p>`;
+}
+</script>
+
+<button id="next-button" onclick="nextQuestion()">Siguiente Pregunta</button>
+
+</body>
+</html>
